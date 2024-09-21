@@ -8,6 +8,8 @@ This plugin provides language support for the following languages that were hist
 * Applesoft BASIC
 * Merlin Assembly
 
+<img src="nvim-a2-pack-demo.gif" alt="session capture"/>
+
 ## Installation
 
 1. Install rust if necessary (search for rustup, or perhaps use a package manager, e.g. `brew install rust`).
@@ -80,7 +82,7 @@ return {
 }
 ```
 
-The available map keys can be found [here](https://github.com/dfgordon/a2kit/wiki/Languages#configuration-options), with the caveat that there is an implied root key corresponding to the language, as follows:
+Some of the available map keys can be found [here](https://github.com/dfgordon/a2kit/wiki/Languages#configuration-options), with the caveat that there is an implied root key corresponding to the language, as follows:
 
 * Merlin = `merlin6502`
 * Applesoft = `applesoft`
