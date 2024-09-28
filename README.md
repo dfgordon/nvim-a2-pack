@@ -12,20 +12,25 @@ This plugin provides language support for the following languages that were hist
 
 ## Installation
 
-1. Install a C compiler if necessary
-2. Install the rust toolchain if necessary
-3. Run `cargo install a2kit` in the terminal (a2kit v3.3+ is required)
-4. Install the plugin.  The procedure varies depending on plugin manager.  Examples follow.
-5. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
+1. Install `a2kit` version 3.3 or higher
+    - Install the rust toolchain if necessary
+    - Run `cargo install a2kit` in the terminal
+    - Check that `~/.cargo/bin` was added to your path
+2. Install the plugin.  The procedure varies depending on plugin manager.  See examples.
+3. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
 
 ### rocks.nvim example
 
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), enter Neovim and issue commands:
 
-1. `:Rocks install rocks-config.nvim` (adds ability to change plugin settings)
-2. `:Rocks install nvim-a2-pack`
+1. `:Rocks install rocks-config.nvim` (adds ability to configure plugins)
+2. `:Rocks install tokyonight.nvim` (color scheme, substitute your favorite)
+3. `:Rocks install nvim-a2-pack`
 
-As of this writing, using `rocks.nvim` with Windows is challenging.
+Notes:
+
+* Color scheme is not automatically made the default, see [Settings](#settings).
+* As of this writing, using `rocks.nvim` with Windows is challenging.
 
 ### lazy.nvim example
 
@@ -43,6 +48,7 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      -- make it the default
       vim.cmd.colorscheme('kanagawa-paper')
     end,
   },
@@ -87,6 +93,17 @@ require('nvim-a2-pack').setup {
     }
     -- ... other languages
 }
+```
+
+You can also use this approach to set the default color scheme, e.g., create `~/.config/nvim/lua/plugins/tokyonight.lua` with content
+
+```lua
+-- set color scheme options
+require('tokyonight.nvim').setup {
+  style = "day"
+}
+-- make it the default
+vim.cmd.colorscheme('tokyonight')
 ```
 
 ### lazy.nvim example

@@ -1,0 +1,1 @@
+require('nvim-a2-pack')
