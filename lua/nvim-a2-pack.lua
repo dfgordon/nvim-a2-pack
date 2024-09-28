@@ -5,15 +5,6 @@ function M.setup(config)
 	 _config = config
 end
 
-vim.filetype.add({
-	extension = {
-		asm = 'merlin',
-		bas = 'applesoft',
-		abas = 'applesoft',
-		ibas = 'integerbasic'
-	}
-})
-
 vim.api.nvim_create_autocmd('FileType', {
 	pattern = 'applesoft',
 	callback = function(args)

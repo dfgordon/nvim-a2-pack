@@ -1,0 +1,12 @@
+--- For some reason this fails to register `*.{s,S}` (it works for all others).
+--- So this is ignored and we rely on the vimscript.
+-- vim.filetype.add({
+-- 	extension = {
+-- 		s = 'merlin',
+--         S = 'merlin',
+-- 		asm = 'merlin',
+-- 		bas = 'applesoft',
+-- 		abas = 'applesoft',
+-- 		ibas = 'integerbasic'
+-- 	}
+-- })

@@ -12,30 +12,42 @@ This plugin provides language support for the following languages that were hist
 
 ## Installation
 
-1. Install rust if necessary (search for rustup, or perhaps use a package manager, e.g. `brew install rust`).
-2. Run `cargo install a2kit` in the terminal.  The a2kit version should be 3.3 or higher.
-3. Install this plugin.  This usually means editing a configuration file.  A minimal example for users of [Lazy](https://github.com/folke/lazy.nvim) is shown below.
-4. Try `nvim <my_file>.bas`.  If highlights [1] look good you are done.  If not, install a more advanced terminal program, or a Neovim GUI.
+1. Install a C compiler if necessary
+2. Install the rust toolchain if necessary
+3. Run `cargo install a2kit` in the terminal (a2kit v3.3+ is required)
+4. Install the plugin.  The procedure varies depending on plugin manager.  Examples follow.
+5. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
 
-[1] You do *not* need `nvim-treesitter`, the semantic highlights provided by the servers are comprehensive
+### rocks.nvim example
+
+For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), enter Neovim and issue commands:
+
+1. `:Rocks install rocks-config.nvim` (adds ability to change plugin settings)
+2. `:Rocks install nvim-a2-pack`
+
+As of this writing, using `rocks.nvim` with Windows is challenging.
+
+### lazy.nvim example
+
+For [lazy.nvim](https://github.com/folke/lazy.nvim) you add a line to your spec file.  A minimal example of this file follows.
 
 ```lua
---- EXAMPLE SPECIFIC TO THE LAZY PLUGIN MANAGER.
+--- LAZY.NVIM SPEC FILE
 --- This file can be named anything.lua.
 --- For Windows this goes in ~\AppData\Local\nvim\lua\plugins.
 --- For others this goes in ~/.config/nvim/lua/plugins.
 return {
-  -- add a color scheme
+  -- add a color scheme if not already done
   {
     "sho-87/kanagawa-paper.nvim",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    lazy = false,
+    priority = 1000,
     config = function()
       vim.cmd.colorscheme('kanagawa-paper')
     end,
   },
 
-  -- add the language servers
+  -- connect the language servers
   { "dfgordon/nvim-a2-pack", opts = {} },
 }
 ```
@@ -53,52 +65,60 @@ Merlin analysis requires a workspace scan.  The way the plugin finds the workspa
 
 ## Features
 
-What you get for free includes, but is not limited to,
-
 * semantic highlights
 * language diagnostics
 * go to definition, type `Ctrl-]` with cursor on any kind of reference
 * hovers, type  `K` with the cursor on a wide variety of language elements
-
-Completions require a little more effort, see below.
+* completions, but see below
 
 ## Settings
 
-Change settings using the plugin module's setup function.  In the case of [Lazy](https://github.com/folke/lazy.nvim) it can be done in declarative fashion:
+Changing settings means changing a Lua map (this is the way of Neovim).  Some of the available map keys can be found [here](https://github.com/dfgordon/a2kit/wiki/Languages#configuration-options). Translate the key paths to Lua maps in the obvious way.
+
+### rocks.nvim example
+
+Assuming you are not on Windows, create a file `~/.config/nvim/lua/plugins/a2-pack.lua` with the settings.  Example:
 
 ```lua
+require('nvim-a2-pack').setup {
+    merlin6502 = {
+        version = "Merlin 32"
+        -- ... other settings
+    }
+    -- ... other languages
+}
+```
+
+### lazy.nvim example
+
+Modify the spec file to include the options.  Example:
+
+```lua
+--- LAZY.NVIM SPEC FILE
 return {
-  --- same as the spec file above but with custom settings
   --- ...omitting other plugins...
   {
     "dfgordon/nvim-a2-pack",
     opts = {
       merlin6502 = {
-        --- server defaults to Merlin 8, change it to Merlin 32
         version = "Merlin 32"
+        -- ... other settings
       }
+      -- ... other languages
     }
   }
 }
 ```
 
-Some of the available map keys can be found [here](https://github.com/dfgordon/a2kit/wiki/Languages#configuration-options), with the caveat that there is an implied root key corresponding to the language, as follows:
-
-* Merlin = `merlin6502`
-* Applesoft = `applesoft`
-* Integer BASIC = `integerbasic`
-
-You translate the key paths to Lua maps in the obvious way.
-
 ## Completions
 
-The language servers provide completions and snippets.  To gain these capabilities in Neovim you have to configure some plugins.  This can get pretty involved.  Here is an example using [Lazy](https://github.com/folke/lazy.nvim).
+The language servers provide completions and snippets.  To gain these capabilities in Neovim you have to configure some plugins.  This can get pretty involved.  Here is an example using [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 ```lua
+--- LAZY.NVIM SPEC FILE
 return {
-  --- same as the spec file above but with completions plugin
   --- ...omitting other plugins...
- {
+  {
     "hrsh7th/nvim-cmp",
     -- load cmp on InsertEnter
     event = "InsertEnter",
@@ -136,3 +156,13 @@ return {
     end
   },
 }
+```
+
+## Notable Non-Dependencies
+
+Neither `lspconfig` nor `nvim-treesitter` are needed by this plugin.
+
+If you want syntax highlights without LSP, you could in theory use `nvim-treesitter`.  The required parsers exist.  However, Merlin requires the LSP for the most accurate highlights.
+
+As of this writing, `a2kit` language servers are not registered with `lspconfig`.
+
