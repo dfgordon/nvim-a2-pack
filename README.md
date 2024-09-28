@@ -99,7 +99,7 @@ You can also use this approach to set the default color scheme, e.g., create `~/
 
 ```lua
 -- set color scheme options
-require('tokyonight.nvim').setup {
+require('tokyonight').setup {
   style = "day"
 }
 -- make it the default
