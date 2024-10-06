@@ -2,22 +2,41 @@
 
 ## Overview
 
-This plugin provides language support for the following languages that were historically used with the Apple II line of computers:
+This plugin provides language support for the following languages:
 
 * Integer BASIC
 * Applesoft BASIC
 * Merlin Assembly
 
+These were commonly used with the Apple II line of computers.
+
 <img src="nvim-a2-pack-demo.gif" alt="session capture"/>
+
+## Features
+
+* semantic highlights
+* language diagnostics
+* go to definition with `Ctrl-]`
+* display hovers with `K`
+* auto completions, see below
+* minify Applesoft with `:A2 minify [level]`
+* tokenize either BASIC with `:A2 tokenize [address]`
+  - for Integer, address is *end* of tokens, and only affects display
+* renumber either BASIC with `:A2 renumber <start> <step>`
+  - renumbers selection, or whole document if none
+  - will change row order if necessary
 
 ## Installation
 
-1. Install `a2kit` version 3.3 or higher
-    - Install the rust toolchain if necessary
+1. Install Neovim version 0.10.1 or higher
+2. Install `a2kit` version 3.3.2 or higher
+    - Install/update the rust toolchain as necessary
     - Run `cargo install a2kit` in the terminal
-    - Check that `~/.cargo/bin` was added to your path
+    - Make sure `~/.cargo/bin` is in the path (usually automatic)
 2. Install the plugin.  The procedure varies depending on plugin manager.  See examples.
 3. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
+
+The plugin does not verify client or server versions.  You have to check yourself with `a2kit -V` and `nvim -v` (case matters).
 
 ### rocks.nvim example
 
@@ -69,14 +88,6 @@ Merlin analysis requires a workspace scan.  The way the plugin finds the workspa
 * Merlin assembly is triggered by `*.s` or `*.asm`
   - Only `*.s` files are detected by the workspace scanner
 
-## Features
-
-* semantic highlights
-* language diagnostics
-* go to definition, type `Ctrl-]` with cursor on any kind of reference
-* hovers, type  `K` with the cursor on a wide variety of language elements
-* completions, but see below
-
 ## Settings
 
 Changing settings means changing a Lua map (this is the way of Neovim).  Some of the available map keys can be found [here](https://github.com/dfgordon/a2kit/wiki/Languages#configuration-options). Translate the key paths to Lua maps in the obvious way.
@@ -113,7 +124,7 @@ Modify the spec file to include the options.  Example:
 ```lua
 --- LAZY.NVIM SPEC FILE
 return {
-  --- ...omitting other plugins...
+  -- ...omitting other plugins...
   {
     "dfgordon/nvim-a2-pack",
     opts = {
@@ -134,7 +145,7 @@ The language servers provide completions and snippets.  To gain these capabiliti
 ```lua
 --- LAZY.NVIM SPEC FILE
 return {
-  --- ...omitting other plugins...
+  -- ...omitting other plugins...
   {
     "hrsh7th/nvim-cmp",
     -- load cmp on InsertEnter

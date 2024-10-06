@@ -5,6 +5,9 @@ function M.setup(config)
 	 _config = config
 end
 
+local commands = require("commands")
+commands.create_commands()
+
 vim.api.nvim_create_autocmd('FileType', {
 	pattern = 'applesoft',
 	callback = function(args)
@@ -12,8 +15,11 @@ vim.api.nvim_create_autocmd('FileType', {
 			name = 'server-applesoft',
 			cmd = {'server-applesoft'},
 			root_dir = vim.fs.root(args.buf,{'.git'}),
-			settings = _config
-		})
+            settings = _config,
+            handlers = {
+                ["workspace/executeCommand"] = commands.finish_command
+			}
+        })
 	end,
 })
 
@@ -24,7 +30,10 @@ vim.api.nvim_create_autocmd('FileType', {
 			name = 'server-integerbasic',
 			cmd = {'server-integerbasic'},
 			root_dir = vim.fs.root(args.buf,{'.git'}),
-			settings = _config
+			settings = _config,
+            handlers = {
+                ["workspace/executeCommand"] = commands.finish_command
+			}
 		})
 	end,
 })
@@ -36,7 +45,10 @@ vim.api.nvim_create_autocmd('FileType', {
 			name = 'server-merlin',
 			cmd = {'server-merlin'},
 			root_dir = vim.fs.root(args.buf,{'.git'}),
-			settings = _config
+			settings = _config,
+            handlers = {
+                ["workspace/executeCommand"] = commands.finish_command
+			}
 		})
 	end,
 })
