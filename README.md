@@ -38,6 +38,10 @@ These were commonly used with the Apple II line of computers.
 
 The plugin does not verify client or server versions.  You have to check yourself with `a2kit -V` and `nvim -v` (case matters).
 
+### Important
+
+At present this works best if the working directory, or some enclosing directory, is a git repository, otherwise strange results may occur.  If your project is not a git repository, a workaround is to create an empty `.git` directory in your project root.
+
 ### rocks.nvim example
 
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim), enter Neovim and issue commands:
@@ -76,10 +80,6 @@ return {
   { "dfgordon/nvim-a2-pack", opts = {} },
 }
 ```
-
-## Workspace
-
-Merlin analysis requires a workspace scan.  The way the plugin finds the workspace root is by walking up the directory tree until it finds a `.git` directory.  If your project is not a git repository, you can add an empty `.git` directory to mark the workspace root.
 
 ## File Types
 
