@@ -26,6 +26,10 @@ These were commonly used with the Apple II line of computers.
   - renumbers selection, or whole document if none
   - will change row order if necessary
 
+### Important
+
+Some features work best if the working directory, or some enclosing directory, is a git repository, otherwise strange results may occur.  If your project is not a git repository, a workaround is to create an empty `.git` directory in your project root.
+
 ## Installation
 
 1. Install Neovim version 0.10.1 or higher
@@ -37,10 +41,6 @@ These were commonly used with the Apple II line of computers.
 3. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
 
 The plugin does not verify client or server versions.  You have to check yourself with `a2kit -V` and `nvim -v` (case matters).
-
-### Important
-
-At present this works best if the working directory, or some enclosing directory, is a git repository, otherwise strange results may occur.  If your project is not a git repository, a workaround is to create an empty `.git` directory in your project root.
 
 ### rocks.nvim example
 
