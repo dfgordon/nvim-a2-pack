@@ -28,7 +28,7 @@ These were commonly used with the Apple II line of computers.
 
 ### Important
 
-Some features work best if the working directory, or some enclosing directory, is a git repository, otherwise strange results may occur.  If your project is not a git repository, a workaround is to create an empty `.git` directory in your project root.
+Some features work best if your project is a git repository, because the project root is found by searching for a `.git` directory.  If the search fails, the current working directory is used.  Creating an empty `.git` directory to mark the project root is a workaround for other kinds of project trees.
 
 ## Installation
 
@@ -40,7 +40,7 @@ Some features work best if the working directory, or some enclosing directory, i
 2. Install the plugin.  The procedure varies depending on plugin manager.  See examples.
 3. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
 
-The plugin does not verify client or server versions.  You have to check yourself with `a2kit -V` and `nvim -v` (case matters).
+The plugin does not verify client or server versions.  Please check using `nvim -v` and `a2kit -V` (case matters).
 
 ### rocks.nvim example
 
