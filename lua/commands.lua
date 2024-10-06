@@ -18,6 +18,7 @@ commands.load_addr = 0
 ---@field impl fun(args:string[], opts: vim.api.keyset.user_command) The command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
 
+---Table containing the subcommand implementation and completions
 ---@type { [string]: A2Cmd }
 local a2_command_tbl = {
     minify = {
@@ -56,22 +57,27 @@ local a2_command_tbl = {
             local ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
             local arguments = {}
             if ft == "applesoft" then
-                commands.load_addr = tonumber(2049)
+                if #args > 0 then
+                    commands.load_addr = tonumber(args[1])
+                else
+                    commands.load_addr = tonumber(2049)
+                end
                 arguments = {
                     vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
                     commands.load_addr
                 }
             elseif ft == "integerbasic" then
-                commands.load_addr = tonumber(38400)
+                if #args > 0 then
+                    commands.load_addr = tonumber(args[1])
+                else
+                    commands.load_addr = tonumber(38400)
+                end
                 arguments = {
                     vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n")
                 }
             else
                 vim.print("can't tokenize " .. ft)
                 return
-            end
-            if #args > 0 then
-                commands.load_addr = tonumber(args[1])
             end
             vim.lsp.buf.execute_command {
                 command = ft..'.tokenize',
@@ -125,6 +131,8 @@ local a2_command_tbl = {
     }
 }
 
+---Get a name in the form untitled<n>.<ext>, choosing n
+---for uniqueness.  Returns nil after 1000 tries.
 local function next_untitled_doc(ext)
     local base = 'untitled'
     local suf = 0
@@ -138,6 +146,7 @@ local function next_untitled_doc(ext)
     return base .. '.' .. ext
 end
 
+---Parse options and dispatch subcommand
 local function dispatcher(opts)
     local fargs = opts.fargs
     local cmd = fargs[1]
@@ -150,6 +159,8 @@ local function dispatcher(opts)
     command.impl(args, opts)
 end
 
+---Set up the main command, always invoked with `:A2`.
+---Only the subcommands actually carry out any action.
 function commands.create_commands()
     vim.api.nvim_create_user_command("A2", dispatcher, {
         nargs = "+",
