@@ -1,3 +1,7 @@
+local abas = require "applesoft"
+local ibas = require "integerbasic"
+local merlin = require "merlin"
+
 local M = {}
 local _config = {}
 
@@ -26,7 +30,7 @@ vim.api.nvim_create_autocmd('FileType', {
 			root_dir = get_workspace_dir(args),
             settings = _config,
             handlers = {
-                ["workspace/executeCommand"] = commands.finish_command
+                ["workspace/executeCommand"] = abas.finish_command
 			}
         })
 	end,
@@ -41,7 +45,7 @@ vim.api.nvim_create_autocmd('FileType', {
 			root_dir = get_workspace_dir(args),
 			settings = _config,
             handlers = {
-                ["workspace/executeCommand"] = commands.finish_command
+                ["workspace/executeCommand"] = ibas.finish_command
 			}
 		})
 	end,
@@ -56,7 +60,7 @@ vim.api.nvim_create_autocmd('FileType', {
 			root_dir = get_workspace_dir(args),
 			settings = _config,
             handlers = {
-                ["workspace/executeCommand"] = commands.finish_command
+                ["workspace/executeCommand"] = merlin.finish_command
 			}
 		})
 	end,

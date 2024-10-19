@@ -1,0 +1,12 @@
+--configuration for the `busted` test framework.
+--execute `busted` from the project root to run tests.
+
+return {
+    _all = {
+        coverage = false
+    },
+    default = {
+        lpath = "./lua/?.lua",
+        verbose = true
+    },
+}

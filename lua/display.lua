@@ -33,4 +33,19 @@ function display.hexdump(ary,load_addr,neg)
         .. string.rep("   ", 8 - #ary % 8) .. asc
 end
 
+---Get a name in the form untitled<n>.<ext>, choosing n
+---for uniqueness.  Returns nil after 1000 tries.
+function display.next_untitled_doc(ext)
+    local base = 'untitled'
+    local suf = 0
+    while vim.fn.bufexists(base .. '.' .. ext) ~= 0 do
+        suf = suf + 1
+        base = base .. suf
+        if suf == 1000 then
+            return nil
+        end
+    end
+    return base .. '.' .. ext
+end
+
 return display

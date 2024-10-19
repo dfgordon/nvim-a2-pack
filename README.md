@@ -14,21 +14,13 @@ These were commonly used with the Apple II line of computers.
 
 ## Features
 
-* semantic highlights
-* language diagnostics
-* go to definition with `Ctrl-]`
-* display hovers with `K`
-* auto completions, see below
-* minify Applesoft with `:A2 minify [level]`
-* tokenize either BASIC with `:A2 tokenize [address]`
-  - for Integer, address is *end* of tokens, and only affects display
-* renumber either BASIC with `:A2 renumber <start> <step>`
-  - renumbers selection, or whole document if none
-  - will change row order if necessary
+* highlights, diagnostics, hovers, completions, symbols
+* disk image access
+* renumbering and minification of BASIC
+* disassemble binaries to Merlin source code
+* settings for Merlin version and processor target
 
-### Important
-
-Some features work best if your project is a git repository, because the project root is found by searching for a `.git` directory.  If the search fails, the current working directory is used.  Creating an empty `.git` directory to mark the project root is a workaround for other kinds of project trees.
+See [Commands](#commands) and [Tips](#tips) for more.
 
 ## Installation
 
@@ -76,7 +68,7 @@ return {
     end,
   },
 
-  -- connect the language servers
+  -- add this plugin
   { "dfgordon/nvim-a2-pack", opts = {} },
 }
 ```
@@ -185,6 +177,62 @@ return {
   },
 }
 ```
+## Tips
+
+* Start commands with `:A2`, from there you can tab-complete your way
+* When completing a path, enter slash after subdirectory selection, then tab again
+  - it works on disk images too!
+* You can use `K` on a wide range of language elements
+  - BASIC keywords, processor instructions, psuedo-operations
+  - special addresses like soft switches, ROM routines, ZP locations, etc.
+  - macro references will show the macro expansion
+  - BASIC line number references, or Merlin label references, will show the docstring
+* Ctrl-`]` works on BASIC line number references as well as Merlin labels
+* Format Merlin columns with `gq`
+* Some features work best if the plugin can find the project root.
+  - The first choice of project root is to walk up the directory tree until we find `.git`
+  - The second choice of project root is the current working directory
+  - Avoid a voluminous project root, or else workspace scans will be slow.
+
+## Commands
+
+All commands associated with this plugin begin with `:A2`.  Subcommands are as follows.
+
+### `:A2 asm`
+
+Often the disassembler needs help identifying data sections.  This command "spot assembles" lines of code and converts them to data.  It will express the data as Merlin pseudo-operations such as `HEX`, `ASC`, `DCI`, `DS`, and others.  First select the lines to be converted, then issue the command.  If you get an error about resolving the program counter, you may need to insert an `ORG` at the start of the lines to be converted.
+
+### `:A2 load <path>`
+
+This loads a file from the currently mounted disk image into the current buffer for editing.  Tab completion shows files based on buffer's filetype:
+
+* `applesoft`: directories and Applesoft programs are shown.
+* `integerbasic`: directories and Integer BASIC programs are shown.
+* `merlin`: directories, text files, and binary files are shown.  Text files will be decoded as Merlin source.  Binary files will be disassembled as Merlin source.
+
+You can try to load any file by directly typing its name, but in order to get meaningful results, the contents must be the expected tokens.
+
+### `:A2 minify [level]`
+
+This reduces the size of an Applesoft program by stripping comments, keeping only the two significant characters in variables, and stripping unnecessary separators.  Level 1 and level 2 are currently the same.  Level 3 will truncate variable names that occur inside ampersand commands.  The minified program is opened in a new window.
+
+### `:A2 mount <path>`
+
+Before any disk image can be accessed it has to be mounted using this command.  This tells the active language server to solve and buffer the disk image.  Each server will only mount one disk image at a time, i.e., mounting a new disk image unmounts the old one.
+
+### `:A2 renumber <start> <step>`
+
+This renumbers the BASIC program in the current buffer.  If there is no selection, the whole document is renumbered.  If there is a selection, the primary line numbers are renumbered only in the selection, but references are still updated throughout the whole document.  This will change row ordering if necessary, unless there would be interleaving or colliding lines, in which case an error is returned.
+
+### `:A2 save <path>`
+
+This saves a file from the current buffer to the currently mounted disk image.  Tokenization is automatic.  Type of tokenization is based on the buffer's filetype.  If the file exists the user must respond to a warning.
+
+**caveat**: If diagnostics show syntax errors, please resolve them before saving to a disk image.
+
+### `:A2 tokenize [address]`
+
+This produces a hex dump of the tokenized version of the BASIC program in the current buffer, mainly for inspection purposes.  For Applesoft, the `address` option is the starting address, and affects the actual tokens.  For Integer, the `address` is the ending address, and only affects the display.
 
 ## Notable Non-Dependencies
 
