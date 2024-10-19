@@ -20,7 +20,7 @@ These were commonly used with the Apple II line of computers.
 * disassemble binaries to Merlin source code
 * settings for Merlin version and processor target
 
-See [Commands](#commands) and [Tips](#tips) for more.
+See [Tips](#tips) and [Commands](#commands) for more.
 
 ## Installation
 
@@ -179,9 +179,11 @@ return {
 ```
 ## Tips
 
+* When editing Merlin files start from a modest-size directory
+  - Deep project roots will cause a long delay before server starts responding
 * Start commands with `:A2`, from there you can tab-complete your way
 * When completing a path, enter slash after subdirectory selection, then tab again
-  - it works on disk images too!
+  - It works on disk images too!
 * You can use `K` on a wide range of language elements
   - BASIC keywords, processor instructions, psuedo-operations
   - special addresses like soft switches, ROM routines, ZP locations, etc.
@@ -192,7 +194,7 @@ return {
 * Some features work best if the plugin can find the project root.
   - The first choice of project root is to walk up the directory tree until we find `.git`
   - The second choice of project root is the current working directory
-  - Avoid a voluminous project root, or else workspace scans will be slow.
+  - Avoid a voluminous project root, or else workspace scans will be slow
 
 ## Commands
 
