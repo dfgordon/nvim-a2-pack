@@ -25,7 +25,7 @@ See [Tips](#tips) and [Commands](#commands) for more.
 ## Installation
 
 1. Install Neovim version 0.10.1 or higher
-2. Install `a2kit` version 3.3.2 or higher
+2. Install `a2kit` version 3.4.0 or higher
     - Install/update the rust toolchain as necessary
     - Run `cargo install a2kit` in the terminal
     - Make sure `~/.cargo/bin` is in the path (usually automatic)
@@ -179,8 +179,6 @@ return {
 ```
 ## Tips
 
-* When editing Merlin files start from a modest-size directory
-  - Deep project roots will cause a long delay before server starts responding
 * Start commands with `:A2`, from there you can tab-complete your way
 * When completing a path, enter slash after subdirectory selection, then tab again
   - It works on disk images too!
@@ -191,10 +189,10 @@ return {
   - BASIC line number references, or Merlin label references, will show the docstring
 * Ctrl-`]` works on BASIC line number references as well as Merlin labels
 * Format Merlin columns with `gq`
-* Some features work best if the plugin can find the project root.
-  - The first choice of project root is to walk up the directory tree until we find `.git`
-  - The second choice of project root is the current working directory
-  - Avoid a voluminous project root, or else workspace scans will be slow
+* When editing Merlin sources, be aware of the workspace scanner
+  - Deep project roots can impact both performance and accuracy
+  - Scanner passes over `build`, `node_modules`, and `target` directories
+  - The project root is found by looking for `.git`.  The current working directory is the fallback.
 
 ## Commands
 
@@ -202,7 +200,19 @@ All commands associated with this plugin begin with `:A2`.  Subcommands are as f
 
 ### `:A2 asm`
 
-Often the disassembler needs help identifying data sections.  This command "spot assembles" lines of code and converts them to data.  It will express the data as Merlin pseudo-operations such as `HEX`, `ASC`, `DCI`, `DS`, and others.  First select the lines to be converted, then issue the command.  If you get an error about resolving the program counter, you may need to insert an `ORG` at the start of the lines to be converted.
+Convert code to data.  This will first assemble the code, then re-express it as Merlin pseudo-operations such as `HEX`, `ASC`, `DCI`, `DS`, and others.  First select the lines to be converted, then issue the command.
+
+It is sometimes necessary to add a program counter hint.  This can be done with the `ORG` pseudo-operation, or by adding a label of the form `_XXXX`, where `X` is a hex digit.
+
+This is by no means a full assembler, its purpose is to help with disassembly.
+
+### `:A2 dasm`
+
+Convert data to code.  This is useful for reversing some prior decision to interpret as data.  First select the lines to be converted, then issue the command.
+
+It is sometimes necessary to add a program counter hint.  This can be done with the `ORG` pseudo-operation, or by adding a label of the form `_XXXX`, where `X` is a hex digit.
+
+To disassemble a whole file see `:A2 load`.
 
 ### `:A2 load <path>`
 
@@ -212,7 +222,7 @@ This loads a file from the currently mounted disk image into the current buffer 
 * `integerbasic`: directories and Integer BASIC programs are shown.
 * `merlin`: directories, text files, and binary files are shown.  Text files will be decoded as Merlin source.  Binary files will be disassembled as Merlin source.
 
-You can try to load any file by directly typing its name, but in order to get meaningful results, the contents must be the expected tokens.
+You can try to load any file by directly typing its name, but in order to get meaningful results, the contents must be in the expected format.
 
 ### `:A2 minify [level]`
 

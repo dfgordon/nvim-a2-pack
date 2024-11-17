@@ -145,4 +145,32 @@ xfrm.asm = {
     end,
 }
 
+xfrm.dasm = {
+    impl = function(args, opts)
+        local ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+        if ft ~= "merlin" then
+            vim.notify("can't disassemble " .. ft, vim.log.levels.ERROR)
+            return
+        end
+        if #args ~= 0 then
+            vim.notify("expected 0 args, got " .. #args, vim.log.levels.ERROR)
+            return
+        end
+        local rng = vim.lsp.util.make_given_range_params().range
+        if rng['end'].line == -1 then
+            vim.notify("spot assembler requires selection", vim.log.levels.ERROR)
+            return
+        end
+        vim.lsp.buf.execute_command {
+            command = "merlin6502.toCode",
+            arguments = {
+                vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
+                vim.uri_from_bufnr(0),
+                rng.start.line,
+                rng['end'].line+1
+            }
+        }
+    end,
+}
+
 return xfrm

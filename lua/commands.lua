@@ -1,18 +1,5 @@
---- :A2 minify {level?} - reduce size of Applesoft code and open in new window
---- 
---- :A2 tokenize {load_addr?} - Display hex dump of tokenized code in new window.
----     For Integer BASIC load_addr is the *end* of the tokens, and has no effect
----     on the tokenized datastream itself.
----
---- :A2 renumber {start} {step} - Renumber a BASIC program.
----     This will move lines if necessary.  Operates on selection, or whole program
----     if there is none.  References are updated globally.
----
---- :A2 mount {path} - mount a disk image
----
---- :A2 load {path} - load a file from a disk image and display in editor.
----     BASIC programs will be detokenized, Merlin sources will be decoded,
----     and binary files will be disassembled.
+--- Main command processor.
+--- Commands begin with `:A2`, subcommands are handled in modules.
 
 local dimg = require "disk-image"
 local xfrm = require "transform"
@@ -32,7 +19,8 @@ local a2_command_tbl = {
     minify = xfrm.minify,
     renumber = xfrm.renumber,
     tokenize = xfrm.tokenize,
-    asm = xfrm.asm
+    asm = xfrm.asm,
+    dasm = xfrm.dasm
 }
 
 ---Parse options and dispatch subcommand

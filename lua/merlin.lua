@@ -57,7 +57,7 @@ function merlin.finish_command(err, result, ctx, config)
         return
     end
     -- first handle commands where nil result is OK
-    if ctx.params.command == "merlin6502.toData" then
+    if ctx.params.command == "merlin6502.toData" or ctx.params.command == "merlin6502.toCode" then
         local ws_edit = {
             changes = {}
         }
