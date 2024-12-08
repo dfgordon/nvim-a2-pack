@@ -164,21 +164,19 @@ dimg.mount = {
     end,
     complete = function (subcmd_arg_lead)
         local ans = {}
-        local base = subcmd_arg_lead
+        local base_esc = subcmd_arg_lead
         if subcmd_arg_lead:find("^~?/") == nil then
-            base = "~/" .. base
+            base_esc = "~/" .. base_esc
         end
-        base = string.gsub(base, "/[^/]*$", "/")
-        for nm,typ in vim.fs.dir(vim.fs.normalize(base),{}) do
+        base_esc = string.gsub(base_esc, "/[^/]*$", "/")
+        local base_raw = string.gsub(base_esc,"\\ "," ")
+        for nm,typ in vim.fs.dir(vim.fs.normalize(base_raw),{}) do
             local keep = typ == "directory"
             for _,filt in ipairs(dimg.file_filter) do
                 keep = keep or string.find(string.lower(nm),"%."..filt.."$")~=nil
             end
             if keep then
-                local proposed = base .. nm
-                -- if typ == "directory" then
-                --     proposed = proposed .. "/"
-                -- end
+                local proposed = base_esc .. string.gsub(nm," ","\\ ")
                 -- important to suppress magic characters (arg4=true)
                 if string.find(proposed,subcmd_arg_lead,1,true)~=nil then
                     table.insert(ans,proposed)
@@ -208,16 +206,17 @@ dimg.load = {
     end,
     complete = function (subcmd_arg_lead)
         local ans = {}
-        local base, matches = string.gsub(subcmd_arg_lead, "/[^/]*$", "/")
+        local base_esc, matches = string.gsub(subcmd_arg_lead, "/[^/]*$", "/")
         if matches == 0 then
-            base = ""
+            base_esc = ""
         end
-        dimg.picker(base,dimg.COMP)
+        local base_raw = string.gsub(base_esc,"\\ "," ")
+        dimg.picker(base_raw,dimg.COMP)
         -- wait a bit in hopes the server will fill the data.
         -- of course we should block until server is done, but how?
         vim.fn.wait(100,function() end)
-        for nm,typ in pairs(dimg.curr_listing) do
-            local proposed = base..nm
+        for nm, typ in pairs(dimg.curr_listing) do
+            local proposed = base_esc .. string.gsub(nm," ","\\ ")
             -- important to suppress magic characters (arg4=true)
             if string.find(proposed,subcmd_arg_lead,1,true)~=nil then
                 table.insert(ans,proposed)

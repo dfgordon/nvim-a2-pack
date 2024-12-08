@@ -181,6 +181,8 @@ return {
 
 * Start commands with `:A2`, from there you can tab-complete your way
 * When completing a path, enter slash after subdirectory selection, then tab again
+  - Always use forward slash to form paths
+  - Backslash is used for escapes (esp. spaces)
   - It works on disk images too!
 * You can use `K` on a wide range of language elements
   - BASIC keywords, processor instructions, psuedo-operations
