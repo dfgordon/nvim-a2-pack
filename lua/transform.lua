@@ -2,6 +2,7 @@ local xfrm = {}
 
 local abas = require "applesoft"
 local ibas = require "integerbasic"
+local merlin = require "merlin"
 
 xfrm.minify = {
     impl = function(args, opts)
@@ -18,13 +19,10 @@ xfrm.minify = {
         if #args > 0 then
             level = tonumber(args[1])
         end
-        vim.lsp.buf.execute_command {
-            command = 'applesoft.minify',
-            arguments = {
-                vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
-                level
-            }
-        }
+        abas.run('applesoft.minify', {
+            vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
+            level
+        })
     end,
     complete = function (subcmd_arg_lead)
         return {"1","2","3"}
@@ -52,6 +50,7 @@ xfrm.tokenize = {
                 vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
                 abas.put_args.load_addr
             }
+            abas.run("applesoft.tokenize",arguments)
         elseif ft == "integerbasic" then
             if #args > 0 then
                 ibas.load_addr = tonumber(args[1])
@@ -61,14 +60,11 @@ xfrm.tokenize = {
             arguments = {
                 vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n")
             }
+            ibas.run("integerbasic.tokenize",arguments)
         else
             vim.notify("can't tokenize " .. ft, vim.log.levels.ERROR)
             return
         end
-        vim.lsp.buf.execute_command {
-            command = ft..'.tokenize',
-            arguments = arguments
-        }
     end,
     complete = function (subcmd_arg_lead)
         local ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
@@ -101,16 +97,18 @@ xfrm.renumber = {
         if rng.start.line == rng['end'].line then
             rng = nil
         end
-        vim.lsp.buf.execute_command {
-            command = ft .. '.move',
-            arguments = {
-                textDocumentItem,
-                rng,
-                args[1],
-                args[2],
-                true
-            }
+        local arguments = {
+            textDocumentItem,
+            rng,
+            args[1],
+            args[2],
+            true
         }
+        if ft == "applesoft" then
+            abas.run(ft..".move",arguments)
+        else
+            ibas.run(ft..".move",arguments)
+        end
     end,
     complete = function (subcmd_arg_lead)
         return {"1","10"}
@@ -133,15 +131,12 @@ xfrm.asm = {
             vim.notify("spot assembler requires selection", vim.log.levels.ERROR)
             return
         end
-        vim.lsp.buf.execute_command {
-            command = "merlin6502.toData",
-            arguments = {
-                vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
-                vim.uri_from_bufnr(0),
-                rng.start.line,
-                rng['end'].line+1
-            }
-        }
+        merlin.run("merlin6502.toData", {
+            vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
+            vim.uri_from_bufnr(0),
+            rng.start.line,
+            rng['end'].line+1
+        })
     end,
 }
 
@@ -161,15 +156,12 @@ xfrm.dasm = {
             vim.notify("spot assembler requires selection", vim.log.levels.ERROR)
             return
         end
-        vim.lsp.buf.execute_command {
-            command = "merlin6502.toCode",
-            arguments = {
-                vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
-                vim.uri_from_bufnr(0),
-                rng.start.line,
-                rng['end'].line+1
-            }
-        }
+        merlin.run("merlin6502.toCode", {
+            vim.fn.join(vim.fn.getbufline(vim.fn.bufname("%"), 0, "$"), "\n"),
+            vim.uri_from_bufnr(0),
+            rng.start.line,
+            rng['end'].line+1
+        })
     end,
 }
 

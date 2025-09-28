@@ -11,14 +11,15 @@ ibas.put_args = {
     text = ""
 }
 
+function ibas.run(cmd,args)
+    dimg.run(cmd, args, "server-integerbasic")
+end
+
 function ibas.put()
-    vim.lsp.buf.execute_command {
-        command = "integerbasic.disk.put",
-        arguments = {
-            ibas.put_args.path,
-            ibas.put_args.text
-        }
-    }
+    ibas.run("integerbasic.disk.put", {
+        ibas.put_args.path,
+        ibas.put_args.text
+    })
 end
 
 ---Process server's response to executeCommand request

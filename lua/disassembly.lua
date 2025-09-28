@@ -1,4 +1,5 @@
 local mimg = require "memory-image"
+local dimg = require "disk-image"
 
 local dasm = {}
 
@@ -32,7 +33,7 @@ function dasm.input_params(rng_type,beg,ending,xc,mx,label)
         dasm.rng_type = rng_type
         dasm.addr_range = { beg, ending }
     end
-    
+
     if xc == nil then
         local proc = vim.fn.confirm("select processor", "&16502\n&265c02\n&365816", "Question")
         if proc == 0 then
@@ -78,19 +79,17 @@ end
 function dasm.from_disk_image(result)
     mimg.init()
     mimg.finish_bload(result)
-    if dasm.input_params("last prodos bload",0,0,nil,nil,nil) then
-        vim.lsp.buf.execute_command {
-            command = "merlin6502.disassemble",
-            arguments = {
-                mimg.main,
-                tonumber(dasm.addrRange[1]),
-                tonumber(dasm.addrRange[2]),
-                dasm.rng_type,
-                tonumber(dasm.xc),
-                tonumber(dasm.mx),
-                dasm.label
-            }
+    if dasm.input_params("last prodos bload", 0, 0, nil, nil, nil) then
+        local args = {
+            mimg.main,
+            tonumber(dasm.addrRange[1]),
+            tonumber(dasm.addrRange[2]),
+            dasm.rng_type,
+            tonumber(dasm.xc),
+            tonumber(dasm.mx),
+            dasm.label
         }
+        dimg.run("merlin6502.disassemble", args, "server-merlin")
     end
 end
 

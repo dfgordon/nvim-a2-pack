@@ -17,15 +17,16 @@ function abas.is_addr_bad(addr)
     return false
 end
 
+function abas.run(cmd, args)
+    dimg.run(cmd, args, "server-applesoft")
+end
+
 function abas.put()
-    vim.lsp.buf.execute_command {
-        command = "applesoft.disk.put",
-        arguments = {
-            abas.put_args.path,
-            abas.put_args.text,
-            abas.put_args.load_addr
-        }
-    }
+    abas.run("applesoft.disk.put", {
+        abas.put_args.path,
+        abas.put_args.text,
+        abas.put_args.load_addr
+    })
 end
 
 ---Process server's response to executeCommand request

@@ -10,15 +10,16 @@ merlin.put_args = {
     uri = ""
 }
 
+function merlin.run(cmd,args)
+    dimg.run(cmd, args, "server-merlin")
+end
+
 function merlin.put()
-    vim.lsp.buf.execute_command {
-        command = "merlin6502.disk.put",
-        arguments = {
-            merlin.put_args.path,
-            merlin.put_args.text,
-            merlin.put_args.uri
-        }
-    }
+    merlin.run("merlin6502.disk.put", {
+        merlin.put_args.path,
+        merlin.put_args.text,
+        merlin.put_args.uri
+    })
 end
 
 function merlin.decode(result)
@@ -27,12 +28,7 @@ function merlin.decode(result)
     for i = 3,#result do
         slice[i-2] = tonumber(result[i])
     end
-    vim.lsp.buf.execute_command {
-        command = "merlin6502.detokenize",
-        arguments = {
-            slice
-        }
-    }
+    merlin.run("merlin6502.detokenize", { slice })
 end
 
 function merlin.is_source(result)

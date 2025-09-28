@@ -24,15 +24,13 @@ See [Tips](#tips) and [Commands](#commands) for more.
 
 ## Installation
 
-1. Install Neovim version 0.10.1 or higher
-2. Install `a2kit` version 3.4.0 or higher
+1. Install Neovim version 0.11 or higher
+2. Install `a2kit` version 4.0.0 or higher
     - Install/update the rust toolchain as necessary
     - Run `cargo install a2kit` in the terminal
     - Make sure `~/.cargo/bin` is in the path (usually automatic)
 2. Install the plugin.  The procedure varies depending on plugin manager.  See examples.
 3. Test it by moving the cursor over some keyword in an Apple II source file, and pressing `K` (case matters) in normal mode.  You should get a hover.  If the color scheme is not rendered properly, try installing a better terminal program, or a Neovim GUI.
-
-The plugin does not verify client or server versions.  Please check using `nvim -v` and `a2kit -V` (case matters).
 
 ### rocks.nvim example
 
@@ -228,7 +226,7 @@ You can try to load any file by directly typing its name, but in order to get me
 
 ### `:A2 minify [level]`
 
-This reduces the size of an Applesoft program by stripping comments, keeping only the two significant characters in variables, and stripping unnecessary separators.  Level 1 and level 2 are currently the same.  Level 3 will truncate variable names that occur inside ampersand commands.  The minified program is opened in a new window.
+This reduces the size of an Applesoft program.  The minified program is opened in a new window.  The transformations become more aggressive as the level is increased.  Use `a2kit minify -h` in your terminal to see the available levels.
 
 ### `:A2 mount <path>`
 

@@ -36,6 +36,21 @@ dimg.file_filter = {
     "woz"
 }
 
+function dimg.run(cmd,args,server)
+    local client = vim.lsp.get_clients({ name = server })[1]
+    if client then
+        client:exec_cmd({
+            title = cmd,
+            command = cmd,
+            arguments = args
+        }, {
+            bufnr = vim.api.nvim_get_current_buf()
+        })
+    else
+        vim.notify("LSP client for " .. server .. " was not found", vim.log.levels.ERROR)
+    end
+end
+
 function dimg.is_completion()
     if #dimg.pipeline > 0 then
         if dimg.pipeline[#dimg.pipeline] == dimg.COMP then
@@ -104,12 +119,7 @@ function dimg.check(rows,put_func)
             local overwrite = vim.fn.input(string.upper(fname) .. " already exists, overwrite (y/n)? ")
             if overwrite == "y" or overwrite == "Y" then
                 table.insert(dimg.pipeline,dimg.PUT)
-                vim.lsp.buf.execute_command {
-                    command = s .. ".disk.delete",
-                    arguments = {
-                        dimg.save_path
-                    }
-                }
+                dimg.run(s .. ".disk.delete", { dimg.save_path })
             else
                 vim.notify("aborted by user",vim.log.levels.INFO)
             end
@@ -132,13 +142,10 @@ function dimg.picker(curr_path,ctx)
             return
         end
         table.insert(dimg.pipeline,ctx)
-        vim.lsp.buf.execute_command {
-            command = s .. ".disk.pick",
-            arguments = {
-                curr_path,
-                dimg.get_filter()
-            }
-        }
+        dimg.run(s .. ".disk.pick", {
+            curr_path,
+            dimg.get_filter()
+        })
     else
         vim.notify("action was interrupted by change in buffer",vim.log.levels.ERROR)
     end
@@ -155,12 +162,7 @@ dimg.mount = {
             vim.notify("expected 1 arg, got " .. #args,vim.log.levels.ERROR)
             return
         end
-        vim.lsp.buf.execute_command {
-            command = s .. ".disk.mount",
-            arguments = {
-                vim.fs.normalize(args[1])
-            }
-        }
+        dimg.run(s .. ".disk.mount", { vim.fs.normalize(args[1]) })
     end,
     complete = function (subcmd_arg_lead)
         local ans = {}
